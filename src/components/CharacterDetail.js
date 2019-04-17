@@ -6,7 +6,7 @@ const CharacterDetail = (props) => {
     <div>
       <h1>{props.character.name}</h1>
       <h2>{props.character.house}</h2>
-      <img src={props.character.image} height='320px' width='240px' />
+      <img src={props.character.image} height='320px' width='240px' alt="character"/>
     </div>
   )
 }

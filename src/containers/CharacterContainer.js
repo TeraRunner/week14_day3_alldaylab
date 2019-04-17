@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
 import CharacterSelector from '../components/CharacterSelector'
 import CharacterDetail from '../components/CharacterDetail'
+import TitleBar from '../components/TitleBar'
 
 export default class CharacterContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       characters: [],
-      currentCharacter: null
+      currentCharacter: null,
+      currentHouse: null
     }
     this.handleCharacterSelected = this.handleCharacterSelected.bind(this);
+    this.handleHousesSelect = this.handleHousesSelect.bind(this);
+    this.getFilteredCharacters = this.getFilteredCharacters.bind(this);
   }
 
   componentDidMount() {
@@ -28,16 +32,41 @@ export default class CharacterContainer extends Component {
 
   }
 
+  handleHousesSelect(index) {
+    const selectedHouse = this.props.houses[index];
+    this.setState({currentHouse: selectedHouse});
+  }
+
   handleCharacterSelected(index) {
-    const selectedCharacter = this.state.characters[index];
-    this.setState({currentCharacter: selectedCharacter})
+    const selectedCharacter = this.getFilteredCharacters()[index];
+    this.setState({currentCharacter: selectedCharacter});
+  }
+
+  getFilteredCharacters() {
+    const charactersArray = this.state.characters;
+    if (this.state.currentHouse == null) {
+      return this.state.characters;
+    }
+    else {
+      const houseQuery = this.state.currentHouse.name;
+      const filtered = charactersArray.filter((character) => {
+        return houseQuery === character.house
+      });
+      return filtered;
+
+    }
+    // return this.state.characters;
   }
 
   render() {
     return (
       <div>
+        <TitleBar
+          onHousesSelect={this.handleHousesSelect}
+          houses={this.props.houses}
+        />
         <h1>Character container</h1>
-          <CharacterSelector characters={this.state.characters} onCharacterSelected={this.handleCharacterSelected} />
+          <CharacterSelector characters={this.getFilteredCharacters()} onCharacterSelected={this.handleCharacterSelected} />
           <CharacterDetail character={this.state.currentCharacter} />
       </div>
     )
